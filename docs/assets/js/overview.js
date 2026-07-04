@@ -106,7 +106,7 @@ export function renderTrend() {
   const labels = runs.map(r => r.timestamp.slice(5, 10));
   const note = $("trendNote");
   if (note) note.textContent = store.HIST.runs.length < 2
-    ? "Wykres zapełnia się od pierwszego pomiaru - kolejne punkty dojdą przy następnych przebiegach (2×/dzień)." : "";
+    ? "Wykres zapełnia się od pierwszego pomiaru - kolejne punkty dojdą przy następnych przebiegach (raz dziennie)." : "";
   const series = runs.map(run => {
     const pts = (run.series || []).filter(x => x.strategy === st.strat);
     const vals = pts.map(x => x[m]).filter(v => v != null);

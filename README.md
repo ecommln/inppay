@@ -18,7 +18,7 @@ repozytorium przechowuje dane, GitHub Pages serwuje dashboard.
 ## Jak to działa (architektura)
 
 ```
-GitHub Actions (cron 2×/dzień + ręcznie)
+GitHub Actions (cron raz dziennie 06:00 UTC + ręcznie)
    │
    ├─ collect.py   → CrUX API (dane realnych użytkowników) + PSI API (Lighthouse)
    ├─ evaluate.py  → statusy wg progów Google, rekomendacje, regresje, podsumowanie
@@ -110,7 +110,7 @@ python -m http.server 8000
 3. **Settings → Variables → Actions:** `DASHBOARD_URL` = adres Pages (do linku w mailu).
 4. **Settings → Pages:** źródło = branch `main`, katalog `/docs`.
 5. **Actions → Monitor wydajności → Run workflow** - pierwszy przebieg ręcznie.
-   Kolejne lecą automatycznie 2×/dzień.
+   Kolejne lecą automatycznie raz dziennie (06:00 UTC).
 
 ---
 
