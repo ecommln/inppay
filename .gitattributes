@@ -1,0 +1,3 @@
+# Normalizacja końców linii: w repo zawsze LF (spójnie mimo pracy na Windows).
+* text=auto eol=lf
+*.png binary

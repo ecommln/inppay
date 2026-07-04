@@ -1,0 +1,17 @@
+# Środowisko wirtualne — lokalne, nie trafia do repo
+.venv/
+__pycache__/
+*.pyc
+
+# Sekrety — NIGDY w repo (tylko GitHub Secrets / zmienne środowiskowe)
+.env
+*.local
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db
+
+# Lokalne artefakty robocze (screenshoty, pliki tymczasowe walidacji)
+_*.png
+_*.mjs
+_*.js

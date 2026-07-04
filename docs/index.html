@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Monitor wydajności · inpostpay.pl</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="app" id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand"><div class="mk"><div></div></div>
+      <div class="nm">InPost<span class="pay">Pay</span></div></div>
+    <nav class="nav" id="nav">
+      <a data-view="overview" class="active">Przegląd ogólny</a>
+      <a data-view="urls">Szczegóły per URL</a>
+    </nav>
+    <div class="side-foot">
+      <div class="theme-toggle" id="themeToggle">
+        <button data-theme="light" class="active">☀ Dzień</button>
+        <button data-theme="dark">🌙 Noc</button>
+      </div>
+      <div class="side-lbl">Status danych</div>
+      <div class="side-status" id="sideStatus"></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div id="mockbar"></div>
+
+    <!-- ========== OVERVIEW ========== -->
+    <div id="viewOverview">
+      <div class="vhead">
+        <div><h1>Przegląd wydajności</h1><div class="sub" id="lastRunO">Wczytywanie…</div></div>
+        <div class="stabs" data-strat-tabs>
+          <button data-strat="mobile" class="active">Mobile</button>
+          <button data-strat="desktop">Desktop</button>
+        </div>
+      </div>
+
+      <!-- KONDYCJA SERWISU -->
+      <div class="sec">
+        <div class="sec-head"><span class="sec-lbl">Kondycja serwisu</span>
+          <span class="sec-sub">stan stron kluczowych w jednym zdaniu</span></div>
+      </div>
+      <h2 class="health-headline" id="healthHeadline">-</h2>
+      <p class="health-desc" id="healthDesc">-</p>
+      <div class="health-tiles">
+        <div class="htile"><div class="top"><span class="dot dot-good"></span><b id="hGood">-</b></div><div class="lbl">strony w normie</div></div>
+        <div class="htile"><div class="top"><span class="dot dot-warn"></span><b id="hWarn">-</b></div><div class="lbl">do poprawy</div></div>
+        <div class="htile"><div class="top"><span class="dot dot-poor"></span><b id="hPoor">-</b></div><div class="lbl">wymaga pilnej uwagi</div></div>
+      </div>
+
+      <!-- CWV -->
+      <div class="sec">
+        <div class="sec-head"><span class="sec-lbl">Core Web Vitals</span>
+          <span class="sec-sub">wyniki serwisu · P50 (typowa) i P90 (gorszy ogon)</span></div>
+      </div>
+      <div class="cwv" id="cwv"></div>
+
+      <!-- PODSUMOWANIE -->
+      <div class="sec">
+        <div class="sec-head"><span class="sec-lbl">Podsumowanie</span>
+          <span class="sec-sub">strony kluczowe serwisu i URL-e blogowe</span></div>
+      </div>
+      <p class="verdict" id="verdict">-</p>
+      <div class="summary summary-3">
+        <!-- Lejek konwersji (strony tier 1 - na przychód) -->
+        <div class="sbox">
+          <div class="sbox-head"><span class="sbox-t">🎯 Lejek konwersji</span>
+            <span class="sbox-s">na przychód</span></div>
+          <div class="sbox-big"><b id="lejekTotal">-</b><span>stron kluczowych</span></div>
+          <div class="sbar" id="lejekBar"></div>
+          <div class="scounts" id="lejekCounts"></div>
+          <div class="sstats">
+            <div><div class="k">Ryzyko dla konwersji</div><div class="v" id="srvConv">-</div></div>
+            <div><div class="k">Wpływ na SEO</div><div class="v" id="srvSeo">-</div></div>
+          </div>
+          <button class="see-more" data-goto="conversion">Zobacz szczegóły →</button>
+          <div class="sbox-foot">home · Dla biznesu · Formularz B2B · Zapłać za 30 dni</div>
+        </div>
+        <div class="divider"></div>
+        <!-- Kampanie i promocje (landingi płatnego ruchu) -->
+        <div class="sbox">
+          <div class="sbox-head"><span class="sbox-t">Kampanie i promocje</span>
+            <span class="sbox-s">cele płatnego ruchu</span></div>
+          <div class="sbox-big"><b id="campTotal">-</b><span>landingów</span></div>
+          <div class="sbar" id="campBar"></div>
+          <div class="scounts" id="campCounts"></div>
+          <div class="sstats">
+            <div><div class="k">Cele Ads</div><div class="v" id="campAds">-</div></div>
+            <div><div class="k">Ryzyko CPC w Ads</div><div class="v" id="campRisk">-</div></div>
+          </div>
+          <button class="see-more" data-goto="campaign">Zobacz szczegóły →</button>
+          <div class="sbox-foot">Okazje · Konkurs · SuperLink · iziLink · BL Paczka</div>
+        </div>
+        <div class="divider"></div>
+        <!-- Blog (SEO) -->
+        <div class="sbox">
+          <div class="sbox-head"><span class="sbox-t">Blog — artykuły</span>
+            <span class="sbox-s mono">/aktualnosci/*</span></div>
+          <div class="sbox-big"><b id="blogTotal">-</b><span>URL-e (SEO)</span></div>
+          <div class="sbar" id="blogBar"></div>
+          <div class="scounts" id="blogCounts"></div>
+          <div class="sstats">
+            <div><div class="k">Mediana LCP (blog)</div><div class="v" id="blogLcp">-</div></div>
+            <div><div class="k">Problemy krytyczne</div><div class="v" id="blogCrit">-</div></div>
+          </div>
+          <button class="see-more" data-goto="blog">Zobacz szczegóły →</button>
+          <div class="sbox-foot">jeden szablon Drupala · dane na poziomie domeny</div>
+        </div>
+      </div>
+
+      <!-- WPŁYW -->
+      <div class="impact">
+        <div class="sec-head nomargin">
+          <span class="sec-lbl">Dlaczego wydajność = przychód</span>
+          <span class="sec-sub">benchmarki z badań e-commerce — nie pomiary inpostpay.pl</span></div>
+        <div class="impact-grid">
+          <div><div class="itag">Konwersja</div><p class="itxt"><b>+33%</b> konwersji i +53% przychodu na wizytę po poprawie szybkości ładowania — potwierdzone testem A/B.</p><div class="isrc">Google · case study Rakuten 24 (web.dev)</div></div>
+          <div><div class="itag">Szybkość</div><p class="itxt"><b>~3×</b> wyższa konwersja sklepu ładującego się 1 s vs 5 s (3,05% vs 1,08%).</p><div class="isrc">Portent · analiza 100 mln odsłon, 2022</div></div>
+          <div><div class="itag">Sprzedaż</div><p class="itxt"><b>+8%</b> sprzedaży po przyspieszeniu ładowania (LCP) o 31% — Vodafone.</p><div class="isrc">Google · web.dev</div></div>
+        </div>
+      </div>
+
+      <!-- TRENDY -->
+      <div class="sec">
+        <div class="sec-head"><span class="sec-lbl">Trendy w czasie</span>
+          <span class="sec-sub">„Co się pogorszyło" wskazuje regresje względem poprzednich przebiegów</span></div>
+      </div>
+      <div class="trend">
+        <div>
+          <div class="filters-row">
+            <select id="fMetric"><option value="LCP">LCP</option><option value="CLS">CLS</option><option value="TTFB">TTFB</option><option value="INP">INP</option></select>
+            <select id="fRange"><option value="0">Cały zakres</option><option value="7">7 dni</option><option value="30">30 dni</option></select>
+          </div>
+          <div class="trend-legend">
+            <span><span class="leg-line accent"></span><span id="trendLegLbl">LCP (mediana serwisu)</span></span>
+            <span><span class="leg-line good"></span>próg dobry</span>
+            <span><span class="leg-line poor"></span>próg słaby</span>
+          </div>
+          <canvas id="trendChart" height="130"></canvas>
+          <div class="sec-sub" id="trendNote"></div>
+        </div>
+        <div class="reg">
+          <div class="eyebrow">Co się pogorszyło</div>
+          <div id="regBody"></div>
+        </div>
+      </div>
+
+      <!-- REKOMENDACJE -->
+      <div class="sec">
+        <div class="sec-head">
+          <div><span class="sec-lbl">Rekomendacje dla deweloperów</span>
+            <p class="rec-sub">Priorytetowa lista działań · dźwignia biznesowa (konwersja / SEO / UX) i szacowany zysk.</p></div>
+          <button class="btn" id="copyRecs">Kopiuj listę dla deweloperów</button>
+        </div>
+      </div>
+      <div class="recs" id="recs"></div>
+
+      <!-- E-MAIL -->
+      <div class="sec">
+        <div class="sec-head"><span class="sec-lbl">Powiadomienia e-mail</span>
+          <span class="sec-sub">alert do zespołu przy statusie słaby — z wartością, progiem i rekomendacją</span></div>
+      </div>
+      <div class="email">
+        <div class="alert-main">
+          <div class="alert-row">
+            <span class="alert-dot"></span>
+            <span class="alert-title">Alert do zespołu przy statusie SŁABY</span></div>
+          <p class="alert-desc">E-mail zawiera: co się stało, wartość vs próg, wpływ biznesowy i rekomendację. Wysyłka gotowa do aktywacji jednym sekretem — patrz OPIS.</p>
+        </div>
+        <a class="btn" href="alerts/ostatni-alert.html" target="_blank">Podgląd przykładowego alertu</a>
+      </div>
+      <p class="footer"><b>Źródła:</b> Chrome UX Report API (realni użytkownicy, 28 dni) + PageSpeed Insights (Lighthouse) · Odświeżanie 2×/dzień · * = dane dla całej domeny.</p>
+    </div>
+
+    <!-- ========== SZCZEGÓŁY PER URL ========== -->
+    <div id="viewUrls" class="hidden">
+      <div class="vhead">
+        <div><h1>Szczegóły per URL</h1><div class="sub" id="lastRunU">Wczytywanie…</div></div>
+        <div class="stabs" data-strat-tabs>
+          <button data-strat="mobile" class="active">Mobile</button>
+          <button data-strat="desktop">Desktop</button>
+        </div>
+      </div>
+      <div id="detailBody"></div>
+    </div>
+
+  </main>
+</div>
+
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

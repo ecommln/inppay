@@ -1,0 +1,54 @@
+name: Monitor wydajności inpostpay.pl
+
+# Uruchomienie: raz dziennie (06:00 UTC ≈ 07:00/08:00 PL) + ręcznie z zakładki Actions.
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:        # wymaganie: ręczny wyzwalacz
+
+permissions:
+  contents: write           # commit danych pomiarowych z powrotem do repo
+
+concurrency:
+  group: monitor
+  cancel-in-progress: false # przebiegi nie mogą się nakładać
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalacja zależności
+        run: pip install -r requirements.txt
+
+      - name: Pomiar (CrUX + PSI)
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: python scripts/collect.py
+
+      - name: Ocena, rekomendacje, regresje
+        run: python scripts/evaluate.py
+
+      - name: Alerty e-mail (tryb podglądu, gdy brak RESEND_API_KEY)
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_RECIPIENTS: ${{ secrets.ALERT_RECIPIENTS }}
+          DASHBOARD_URL: ${{ vars.DASHBOARD_URL }}
+        run: python scripts/alert.py
+
+      - name: Zapis wyników do repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ docs/data/ docs/alerts/
+          if git diff --cached --quiet; then
+            echo "Brak zmian w danych — nic do commitu."
+          else
+            git commit -m "pomiar $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi

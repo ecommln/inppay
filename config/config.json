@@ -1,0 +1,74 @@
+{
+  "site": "https://inpostpay.pl",
+  "site_label": "InPost Pay",
+  "strategies": ["mobile", "desktop"],
+
+  "discovery": {
+    "enabled": true,
+    "sitemap": "https://inpostpay.pl/sitemap.xml",
+    "blog_pattern": "aktualnosci-",
+    "exclude_paths": ["/404"],
+    "lab_scope": "all",
+    "blog_lab_sample": 4,
+    "_comment": "field (CrUX) pobierany dla WSZYSTKICH URL z sitemap = pelne pokrycie serwisu. lab (PSI/Lighthouse) jest wolny (~10-25 s/URL), ale kolektor dziala wielowatkowo, wiec 'all' (audyt kazdego URL) miesci sie w ~20-25 min/przebieg i w darmowym limicie GitHub Actions. Alternatywy: 'core_plus_sample' = wszystkie strony core + 'blog_lab_sample' reprezentantow szablonu bloga + kazdy URL, ktory field oznaczyl jako slaby (najtaniej). Artykuly bloga dziela jeden szablon Drupala."
+  },
+
+  "business": {
+    "_comment": "Warstwa biznesowa: tier 1 = strony kluczowe dla przychodu (lejek pozyskania sklepow B2B + wejscie konsumenta/aplikacja), tier 2 = wspierajace. funnel = do jakiego lejka nalezy strona. conversion_tiers wskazuje, ktore tiery skladaja sie na 'Lejek konwersji' pokazywany osobno. ads=true => landing czesto celem platnego ruchu (wolny LCP podnosi CPC w Google Ads).",
+    "conversion_tiers": [1],
+    "funnel_labels": {
+      "merchant": "Lejek B2B (sklepy)",
+      "consumer": "Konsument / aplikacja",
+      "campaign": "Kampanie i promocje",
+      "support":  "Wsparcie i informacje",
+      "seo":      "Blog (SEO)"
+    }
+  },
+
+  "core_overrides": {
+    "/":                  { "label": "Strona główna",         "weight": 3, "tier": 1, "funnel": "consumer" },
+    "/biznes":            { "label": "Dla biznesu",           "weight": 3, "tier": 1, "funnel": "merchant" },
+    "/dlabiznesu":        { "label": "Dla biznesu (landing)", "weight": 3, "tier": 1, "funnel": "merchant", "ads": true },
+    "/b2bform":           { "label": "Formularz B2B",         "weight": 3, "tier": 1, "funnel": "merchant" },
+    "/zaplacza30dni":     { "label": "Zapłać za 30 dni",      "weight": 3, "tier": 1, "funnel": "consumer" },
+    "/zapisz-karte":      { "label": "Zapisz kartę",          "weight": 2, "tier": 2, "funnel": "consumer" },
+    "/nadaj-paczke":      { "label": "Nadaj paczkę",          "weight": 2, "tier": 2, "funnel": "consumer" },
+    "/4-inbox":           { "label": "InBox",                 "weight": 2, "tier": 2, "funnel": "consumer" },
+    "/okazje-i-promocje": { "label": "Okazje i promocje",     "weight": 2, "tier": 2, "funnel": "campaign", "ads": true },
+    "/konkurs-z-inpostpay": { "label": "Konkurs z InPost Pay","weight": 2, "tier": 2, "funnel": "campaign", "ads": true },
+    "/superlink":         { "label": "SuperLink",             "weight": 2, "tier": 2, "funnel": "campaign", "ads": true },
+    "/izilink":           { "label": "iziLink",               "weight": 2, "tier": 2, "funnel": "campaign", "ads": true },
+    "/bl-paczka":         { "label": "BL Paczka",             "weight": 2, "tier": 2, "funnel": "campaign", "ads": true },
+    "/kurier-serwis":     { "label": "Kurier serwis",         "weight": 2, "tier": 2, "funnel": "support" },
+    "/aktualnosci":       { "label": "Aktualności (blog)",    "weight": 2, "tier": 2, "funnel": "support" },
+    "/faq":               { "label": "FAQ",                   "weight": 2, "tier": 2, "funnel": "support" },
+    "/kontakt":           { "label": "Kontakt",               "weight": 2, "tier": 2, "funnel": "support" }
+  },
+
+  "fallback_urls": [
+    { "url": "https://inpostpay.pl/",             "label": "Strona główna",     "weight": 3 },
+    { "url": "https://inpostpay.pl/biznes",        "label": "Dla biznesu",       "weight": 3 },
+    { "url": "https://inpostpay.pl/zaplacza30dni", "label": "Zapłać za 30 dni",  "weight": 3 },
+    { "url": "https://inpostpay.pl/nadaj-paczke",  "label": "Nadaj paczkę",      "weight": 3 },
+    { "url": "https://inpostpay.pl/faq",           "label": "FAQ",               "weight": 2 },
+    { "url": "https://inpostpay.pl/kontakt",       "label": "Kontakt",           "weight": 2 }
+  ],
+
+  "thresholds": {
+    "LCP":  { "good": 2500, "poor": 4000, "unit": "ms",  "name": "Largest Contentful Paint" },
+    "CLS":  { "good": 0.1,  "poor": 0.25, "unit": "",    "name": "Cumulative Layout Shift" },
+    "TTFB": { "good": 800,  "poor": 1800, "unit": "ms",  "name": "Time to First Byte" },
+    "INP":  { "good": 200,  "poor": 500,  "unit": "ms",  "name": "Interaction to Next Paint" }
+  },
+  "alerts": {
+    "mode": "preview",
+    "recipients_env": "ALERT_RECIPIENTS",
+    "trigger_on": ["poor"],
+    "reminder_after_days": 3,
+    "language": "pl"
+  },
+  "regressions": {
+    "lookback_days": 7,
+    "min_delta_pct": 10
+  }
+}

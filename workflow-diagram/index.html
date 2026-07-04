@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jak działa monitor - schemat dla zarządu</title>
+<style>
+  body{margin:0;background:#f4f4f6;font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    color:#1D1D1D;padding:30px}
+  .head{max-width:1300px;margin:0 auto 18px}
+  h1{font-size:24px;margin:0 0 4px}
+  h1 span{color:#E30613}
+  p.sub{color:#666;margin:0;font-size:15px}
+  .frame{max-width:1300px;margin:0 auto;background:#fff;border:1px solid #e7e7ea;border-radius:16px;
+    padding:20px;overflow-x:auto}
+  .legend{max-width:1300px;margin:14px auto 0;color:#666;font-size:13px;display:flex;gap:22px;flex-wrap:wrap}
+  .dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;margin-right:5px}
+  svg{display:block;min-width:1260px}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Jak działa monitor wydajności <span>inpostpay.pl</span></h1>
+    <p class="sub">Schemat procesu - od automatycznego pomiaru do realnego wpływu na biznes.</p>
+  </div>
+
+  <div class="frame">
+  <svg viewBox="0 0 1300 620" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#9aa0a6"/>
+      </marker>
+      <style>
+        .box{rx:16;stroke-width:2}
+        .t{font-size:16px;font-weight:700;fill:#1D1D1D}
+        .st{font-size:13px;fill:#555}
+        .ico{font-size:30px}
+        .lbl{font-size:13px;font-weight:700}
+        .flow{stroke:#9aa0a6;stroke-width:2.5;fill:none}
+      </style>
+    </defs>
+
+    <!-- ŚCIEŻKA -->
+    <!-- B1 -->
+    <rect class="box" x="20" y="255" width="210" height="110" fill="#fff" stroke="#e7e7ea"/>
+    <text class="ico" x="40" y="298">⏰</text>
+    <text class="t" x="40" y="330">Harmonogram</text>
+    <text class="st" x="40" y="350">2× dziennie lub ręcznie</text>
+
+    <!-- B2 -->
+    <rect class="box" x="290" y="255" width="210" height="110" fill="#fff" stroke="#e7e7ea"/>
+    <text class="ico" x="310" y="298">🔍</text>
+    <text class="t" x="310" y="330">Pomiar podstron</text>
+    <text class="st" x="310" y="350">technologia Google PageSpeed</text>
+
+    <!-- B3 Ocena -->
+    <rect class="box" x="560" y="255" width="210" height="110" fill="#fff" stroke="#1D1D1D"/>
+    <text class="ico" x="580" y="298">📊</text>
+    <text class="t" x="580" y="330">Ocena wyniku</text>
+    <text class="st" x="580" y="350">dobry / uwaga / słaby</text>
+
+    <!-- Górna gałąź: Dashboard -->
+    <rect class="box" x="850" y="90" width="230" height="110" fill="#f2fbf6" stroke="#00C96B"/>
+    <text class="ico" x="870" y="133">📈</text>
+    <text class="t" x="870" y="165">Dashboard na żywo</text>
+    <text class="st" x="870" y="185">zespół i zarząd widzą stan</text>
+
+    <!-- Dolna gałąź: Alert + rekomendacje -->
+    <rect class="box" x="850" y="420" width="230" height="110" fill="#fff5f4" stroke="#FF3B30"/>
+    <text class="ico" x="870" y="463">🔔</text>
+    <text class="ico" x="905" y="463">🛠️</text>
+    <text class="t" x="870" y="495">Alert + rekomendacje</text>
+    <text class="st" x="870" y="515">e-mail i lista zadań dla devów</text>
+
+    <!-- Finał: domknięcie pętli biznesowej -->
+    <rect class="box" x="1090" y="240" width="200" height="140" fill="#1D1D1D" stroke="#1D1D1D"/>
+    <text class="ico" x="1110" y="285">🎯</text>
+    <text x="1110" y="322" font-size="19" font-weight="800" fill="#fff">Wyższa konwersja</text>
+    <text x="1110" y="348" font-size="14" font-weight="600" fill="#FFCC66">lepsze SEO i UX</text>
+
+    <!-- STRZAŁKI -->
+    <path class="flow" d="M230,310 L285,310" marker-end="url(#arrow)"/>
+    <path class="flow" d="M500,310 L555,310" marker-end="url(#arrow)"/>
+    <!-- Ocena -> Dashboard (OK) -->
+    <path class="flow" d="M770,290 C820,250 810,180 845,155" marker-end="url(#arrow)"/>
+    <text class="lbl" x="785" y="210" fill="#00A857">🟢 dobry / uwaga</text>
+    <!-- Ocena -> Alert (SŁABY) -->
+    <path class="flow" d="M770,330 C820,380 810,450 845,465" marker-end="url(#arrow)"/>
+    <text class="lbl" x="785" y="425" fill="#E23B30">🔴 słaby</text>
+    <!-- Dashboard -> Finał -->
+    <path class="flow" d="M1080,150 C1140,185 1160,240 1180,285" marker-end="url(#arrow)"/>
+    <!-- Alert -> Finał -->
+    <path class="flow" d="M1080,470 C1140,435 1160,380 1180,335" marker-end="url(#arrow)"/>
+  </svg>
+  </div>
+
+  <div class="legend">
+    <div><span class="dot" style="background:#00C96B"></span>Zielona ścieżka - wszystko działa, zespół monitoruje stan.</div>
+    <div><span class="dot" style="background:#FF3B30"></span>Czerwona ścieżka - problem uruchamia alert i konkretne zadania dla deweloperów.</div>
+    <div>🎯 Ostatni krok pokazuje, po co to wszystko: szybsza strona = więcej dokończonych zakupów i lepsza pozycja w Google.</div>
+  </div>
+</body>
+</html>
