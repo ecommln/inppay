@@ -1,7 +1,7 @@
 // Widok "Szczegóły per URL": tabela z filtrem sekcji (wszystkie/serwis/blog)
 // oraz karta pojedynczego URL (metryki mobile+desktop, trend, wynik Lighthouse).
 import { store, rows } from "./store.js";
-import { META, esc, fmt, val, pillOf, pillTag } from "./format.js";
+import { META, LEVER, LVL, esc, fmt, val, pillOf, pillTag } from "./format.js";
 import { lineChart } from "./charts.js";
 import { $ } from "./dom.js";
 
@@ -88,6 +88,45 @@ function drillRows(r) {
   return row("LCP") + row("CLS") + row("TTFB") + row("INP") +
     `<div class="drow"><span class="k">Wynik Lighthouse</span><span class="v"><b>${sc ?? "–"} / 100</b></span></div>`;
 }
+// Mapa audytów Lighthouse -> metryka, na którą wpływają (spójna z scripts/recommendations.py).
+// Nieznane ID trafiają domyślnie na LCP (tak jak w pipeline'ie).
+const OPP_METRIC = {
+  "unused-javascript": "LCP", "render-blocking-resources": "LCP", "modern-image-formats": "LCP",
+  "uses-responsive-images": "LCP", "uses-optimized-images": "LCP", "efficient-animated-content": "LCP",
+  "unminified-javascript": "LCP", "unminified-css": "LCP", "unused-css-rules": "LCP",
+  "server-response-time": "TTFB", "redirects": "TTFB", "uses-text-compression": "TTFB", "uses-long-cache-ttl": "TTFB",
+  "unsized-images": "CLS", "layout-shifts": "CLS", "font-display": "CLS",
+};
+// Priorytet = oszczędność (ms) x waga strony - te same progi co w recommendations.py.
+function priorityLabel(score) { return score >= 2000 ? "Wysoki" : score >= 700 ? "Średni" : "Niski"; }
+
+// Rekomendacje deweloperskie dla jednego URL: audyty Lighthouse (opportunities) z
+// mobile i desktop, priorytetyzowane, z dźwignią biznesową i szacowaną oszczędnością.
+function drillRecs(rM, rD) {
+  const items = [];
+  [["mobile", "📱", rM], ["desktop", "🖥", rD]].forEach(([strat, icon, r]) => {
+    if (!r) return;
+    const w = r.weight || 1;
+    (r.opportunities || []).forEach(o => {
+      const metric = OPP_METRIC[o.id] || "LCP", savings = o.savings_ms || 0;
+      items.push({ strat, icon, metric, savings, priority: priorityLabel(savings * w), title: o.title });
+    });
+  });
+  if (!items.length)
+    return `<p class="rec-sub" style="margin-top:14px">✓ Lighthouse nie wykrył istotnych wąskich gardeł na tej podstronie - brak rekomendacji.</p>`;
+  items.sort((a, b) => b.savings - a.savings);
+  return items.map(it => {
+    const lv = LVL[it.priority] || LVL["Niski"];
+    return `<div class="rec">
+      <span class="lvl" style="background:${lv.bg};color:${lv.fg}">${it.priority}</span>
+      <div class="body"><div class="title">${esc(it.title)}</div>
+        <div class="sub">${it.icon} ${it.strat === "mobile" ? "Mobile" : "Desktop"} · metryka ${it.metric}</div>
+        <div class="meta"><span class="lever">${LEVER[it.metric] || "UX"}</span>
+          <span class="desc">${esc(META[it.metric].desc)}</span></div></div>
+      <span class="ms">~${it.savings} ms</span></div>`;
+  }).join("");
+}
+
 function renderDrill(body) {
   const url = store.state.drill, rM = resultFor(url, "mobile"), rD = resultFor(url, "desktop"), any = rM || rD;
   if (!any) { body.innerHTML = `<div class="sec">Brak danych.</div>`; return; }
@@ -106,6 +145,10 @@ function renderDrill(body) {
       <a class="rowmore" style="margin:0" href="https://pagespeed.web.dev/analysis?url=${encodeURIComponent(url)}" target="_blank">Pełny raport PSI ↗</a></div>
     <div class="drill-url">${esc(url)}</div>
     <div class="dboxes">${dbox("📱 MOBILE", rM)}${dbox("🖥 DESKTOP", rD)}</div>
+    <div style="margin-top:40px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2)">🛠 Rekomendacje dla deweloperów</div>
+      <p class="rec-sub">Konkretne działania z audytu Lighthouse dla tej podstrony - priorytet ważony wartością strony, oszczędność = szacowany zysk czasu ładowania.</p>
+      <div class="recs">${drillRecs(rM, rD)}</div></div>
     <div style="margin-top:40px">
       <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2)">Trend tego URL · ${store.state.strat === "mobile" ? "Mobile" : "Desktop"} · ${store.state.metric}</div>
       <canvas id="drillChart" height="90" style="margin-top:14px"></canvas>
