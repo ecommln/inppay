@@ -1,0 +1,23 @@
+%% Monitor wydajności inpostpay.pl - workflow procesu (dla CMO)
+%% Wklej na https://mermaid.live aby wyrenderować / wyeksportować (PNG/SVG)
+flowchart TD
+    Start([⏱ Start<br/>codziennie o 06:30 lub ręcznie]):::accent
+    Cfg[⚙️ Konfiguracja<br/>lista podstron z sitemap.xml<br/>progi Google · widok mobile i desktop]
+    Loop[/🔁 Dla każdej podstrony serwisu ~340 URL/]
+    Fetch[🌐 Pomiar wydajności<br/>CrUX API – realni użytkownicy Google<br/>PageSpeed Insights – Lighthouse]
+    Metrics[📊 Metryki<br/>LCP · CLS · TTFB · INP + wynik]
+    Rate[🚦 Ocena wg progów Google<br/>dobry / uwaga / słaby]
+    Decide{Strona<br/>słaba?}
+    Alert[["📧 Alert e-mail do zespołu<br/>co się stało · o ile przekroczono próg · rekomendacja"]]:::poor
+    Save[💾 Zapis wyników w repozytorium]
+    Dash[📈 Dashboard online<br/>kondycja serwisu · lejek konwersji<br/>podstrony · rekomendacje dla deweloperów]:::brand
+    Outcome([🎯 Zespół reaguje szybciej<br/>ochrona konwersji · SEO · UX]):::accent
+
+    Start --> Cfg --> Loop --> Fetch --> Metrics --> Rate --> Decide
+    Decide -- Tak --> Alert --> Save
+    Decide -- Nie --> Save
+    Save --> Dash --> Outcome
+
+    classDef brand fill:#FFCB04,stroke:#1D1D1D,color:#1D1D1D,font-weight:bold;
+    classDef accent fill:#EC0E6E,stroke:#1D1D1D,color:#ffffff,font-weight:bold;
+    classDef poor fill:#EF4444,stroke:#1D1D1D,color:#ffffff;

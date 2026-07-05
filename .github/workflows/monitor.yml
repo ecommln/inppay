@@ -1,9 +1,10 @@
 name: Monitor wydajności inpostpay.pl
 
-# Uruchomienie: raz dziennie (06:00 UTC ≈ 07:00/08:00 PL) + ręcznie z zakładki Actions.
+# Uruchomienie: raz dziennie (06:30 UTC ≈ 07:30/08:30 PL) + ręcznie z zakładki Actions.
+# Minuta 30 zamiast 00: slot ":00" jest najbardziej obciążony u GitHuba i bywa opóźniany/pomijany.
 on:
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "30 6 * * *"
   workflow_dispatch:        # wymaganie: ręczny wyzwalacz
 
 permissions:
