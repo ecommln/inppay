@@ -48,8 +48,16 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ docs/data/ docs/alerts/
           if git diff --cached --quiet; then
-            echo "Brak zmian w danych — nic do commitu."
-          else
-            git commit -m "pomiar $(date -u +%Y-%m-%dT%H:%MZ)"
-            git push
+            echo "Brak zmian w danych - nic do commitu."
+            exit 0
           fi
+          git commit -m "pomiar $(date -u +%Y-%m-%dT%H:%MZ)"
+          # Pomiar trwa ~25 min; w tym czasie remote mógł pójść do przodu
+          # (np. push kodu). Rebase na świeży main, potem push z retry.
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && exit 0
+            echo "Push nieudany (próba $i) - odświeżam i ponawiam..."
+            sleep 5
+          done
+          echo "Nie udało się wypchnąć po 5 próbach." >&2
+          exit 1
