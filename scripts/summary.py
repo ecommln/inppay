@@ -102,7 +102,7 @@ def build_summary(results, cfg):
         # Agregaty liczone W POPRZEK monitorowanych podstron:
         # p50 (mediana) = typowa podstrona, p90 = gorszy ogon (10% podstron wypada gorzej).
         medians, p90 = {}, {}
-        for metric in ("LCP", "CLS", "TTFB", "INP", "score"):
+        for metric in ("LCP", "CLS", "TTFB", "INP", "FCP", "score"):
             vals = []
             for r in rows:
                 if metric == "score":

@@ -155,6 +155,7 @@ def publish_to_docs():
                 "CLS": src.get("CLS"),
                 "TTFB": src.get("TTFB"),
                 "INP": (r.get("field") or {}).get("INP"),
+                "FCP": src.get("FCP"),
             })
         index["runs"].append({"timestamp": run.get("timestamp"), "series": series})
     write_json(DOCS_DATA_DIR / "history-index.json", index)

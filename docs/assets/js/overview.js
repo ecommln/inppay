@@ -19,7 +19,10 @@ function renderHealth() {
 function renderCWV() {
   const s = store.DATA.summary[store.state.strat], box = $("cwv");
   box.innerHTML = "";
-  ["LCP", "CLS", "TTFB", "INP"].forEach(m => {
+  // FCP nie jest Core Web Vital - to metryka diagnostyczna (kiedy pojawia się
+  // pierwsza treść). Pokazujemy ją obok CWV, ale wizualnie wyróżnioną i bez alertu.
+  ["LCP", "CLS", "TTFB", "INP", "FCP"].forEach(m => {
+    const diag = m === "FCP";
     const p50 = s.medians[m], p90 = (s.p90 || {})[m], t = THRESHOLDS[m], meta = META[m];
     const c50 = PILL[rate(m, p50)], c90 = PILL[rate(m, p90)];
     // Strefy paska (dobra/uwaga/słaba) skalowane do progów; marker = pozycja p50.
@@ -28,8 +31,8 @@ function renderCWV() {
     const zWarn = Math.min(100 - zGood, (t.poor - t.good) / scale * 100);
     const zPoor = Math.max(0, 100 - zGood - zWarn);
     const marker = p50 == null ? 0 : Math.max(0, Math.min(100, p50 / scale * 100));
-    box.innerHTML += `<div class="cwvcol">
-      <div class="cwv-top"><span class="cwv-key">${m}</span>
+    box.innerHTML += `<div class="cwvcol${diag ? " diag" : ""}">
+      <div class="cwv-top"><span class="cwv-key">${m}${diag ? ` <span class="cwv-diag-tag">diagnostyka</span>` : ""}</span>
         <span class="cwv-dot" style="background:${c50.c}"></span>
         <span class="cwv-stat" style="color:${c50.c}">${c50.label}</span></div>
       <div class="cwv-title">${meta.human}</div>

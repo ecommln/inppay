@@ -8,6 +8,7 @@ export const THRESHOLDS = {
   CLS: { good: 0.1, poor: 0.25 },
   TTFB: { good: 800, poor: 1800 },
   INP: { good: 200, poor: 500 },
+  FCP: { good: 1800, poor: 3000 },
 };
 export function applyThresholds(t) { if (t) Object.assign(THRESHOLDS, t); }
 
@@ -17,6 +18,7 @@ export const META = {
   CLS: { human: "Stabilność strony", desc: "Czy układ przeskakuje podczas ładowania. Skoki = błędne kliknięcia i porzucone formularze." },
   TTFB: { human: "Reakcja serwera", desc: "Jak szybko serwer zaczyna odpowiadać. Wolno = gorsze SEO i dłuższe wejścia." },
   INP: { human: "Płynność klikania", desc: "Jak szybko strona reaguje na kliknięcia. Wolno = frustracja użytkownika." },
+  FCP: { human: "Pierwszy piksel", desc: "Kiedy pojawia się pierwsza treść. Diagnostyka: wolny FCP przy dobrym LCP wskazuje na serwer lub blokujący JS/CSS." },
 };
 
 export const PILL = {
@@ -27,7 +29,7 @@ export const PILL = {
 };
 // Status pipeline'u (good/needs-improvement/poor) -> klucz PILL. Lokalne (używa pillOf).
 const ST = { good: "D", "needs-improvement": "U", poor: "S" };
-export const LEVER = { LCP: "Konwersja", CLS: "Konwersja", TTFB: "SEO", INP: "UX" };
+export const LEVER = { LCP: "Konwersja", CLS: "Konwersja", TTFB: "SEO", INP: "UX", FCP: "Diagnostyka" };
 export const LVL = {
   "Wysoki": { bg: "#fbe4ee", fg: "#c01a6e" },
   "Średni": { bg: "#fdeede", fg: "#a85a00" },

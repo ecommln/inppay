@@ -77,6 +77,7 @@ CRUX_METRICS = {
     "cumulative_layout_shift": "CLS",
     "experimental_time_to_first_byte": "TTFB",
     "interaction_to_next_paint": "INP",
+    "first_contentful_paint": "FCP",
 }
 
 
@@ -179,6 +180,7 @@ def _parse_psi(data):
     lcp = num("largest-contentful-paint")
     cls = num("cumulative-layout-shift")
     ttfb = num("server-response-time")
+    fcp = num("first-contentful-paint")
     score = lh.get("categories", {}).get("performance", {}).get("score")
 
     opportunities = []
@@ -197,6 +199,7 @@ def _parse_psi(data):
         "LCP": int(round(lcp)) if lcp is not None else None,
         "CLS": round(float(cls), 3) if cls is not None else None,
         "TTFB": int(round(ttfb)) if ttfb is not None else None,
+        "FCP": int(round(fcp)) if fcp is not None else None,
         "score": int(round(score * 100)) if score is not None else None,
         "opportunities": opportunities[:5],
     }

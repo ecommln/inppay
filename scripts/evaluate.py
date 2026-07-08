@@ -24,7 +24,7 @@ def evaluate_statuses(results, thresholds):
     """Nadaje każdemu wierszowi status per metryka + 'overall' (najgorszy z LCP/CLS/TTFB)."""
     for r in results:
         status = {}
-        for metric in ("LCP", "CLS", "TTFB", "INP"):
+        for metric in ("LCP", "CLS", "TTFB", "INP", "FCP"):
             val, _ = metric_value(r, metric)
             status[metric] = rate_status(metric, val, thresholds)
         status["overall"] = worst_status([status["LCP"], status["CLS"], status["TTFB"]])

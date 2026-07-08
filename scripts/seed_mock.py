@@ -34,8 +34,8 @@ def stable_int(s):
 
 # Bazowe (dobre) wartości per strategia; mobile słabszy
 BASE = {
-    "mobile":  {"LCP": 2200, "CLS": 0.06, "TTFB": 650, "INP": 180, "score": 78},
-    "desktop": {"LCP": 1500, "CLS": 0.03, "TTFB": 480, "INP": 120, "score": 93},
+    "mobile":  {"LCP": 2200, "CLS": 0.06, "TTFB": 650, "INP": 180, "FCP": 1600, "score": 78},
+    "desktop": {"LCP": 1500, "CLS": 0.03, "TTFB": 480, "INP": 120, "FCP": 1050, "score": 93},
 }
 
 # Katalog realistycznych audytów Lighthouse (id -> tytuł PL, typowa oszczędność)
@@ -78,12 +78,14 @@ def _measure(entry, strategy, severity, field_mode="url"):
     cls = _jitter(b["CLS"]) * (1 + 2.5 * severity)
     ttfb = _jitter(b["TTFB"]) * (1 + 1.3 * severity)
     inp = _jitter(b["INP"]) * (1 + 1.4 * severity)
+    fcp = _jitter(b["FCP"]) * (1 + 1.4 * severity)  # FCP rośnie razem z TTFB/LCP
     score = max(20, min(100, b["score"] - 45 * severity + random.uniform(-3, 3)))
 
     lab = {
         "LCP": int(round(lcp)),
         "CLS": round(cls, 3),
         "TTFB": int(round(ttfb)),
+        "FCP": int(round(fcp)),
         "score": int(round(score)),
     }
     if field_mode == "none":
@@ -95,6 +97,7 @@ def _measure(entry, strategy, severity, field_mode="url"):
             "CLS": round(cls * random.uniform(0.97, 1.03), 3),
             "TTFB": int(round(ttfb * random.uniform(0.98, 1.04))),
             "INP": int(round(inp)),
+            "FCP": int(round(fcp * random.uniform(0.97, 1.03))),
         }
         scope = field_mode  # 'url' lub 'origin'
     return {

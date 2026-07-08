@@ -85,7 +85,7 @@ function drillRows(r) {
   const row = m => `<div class="drow"><span class="k"><b>${m}</b> · <span>${META[m].human}</span></span>
     <span class="v"><b>${fmt(m, val(r, m))}</b>${pillTag(m, val(r, m))}</span></div>`;
   const sc = (r.lab || {}).score;
-  return row("LCP") + row("CLS") + row("TTFB") + row("INP") +
+  return row("LCP") + row("CLS") + row("TTFB") + row("INP") + row("FCP") +
     `<div class="drow"><span class="k">Wynik Lighthouse</span><span class="v"><b>${sc ?? "–"} / 100</b></span></div>`;
 }
 // Mapa audytów Lighthouse -> metryka, na którą wpływają (spójna z scripts/recommendations.py).

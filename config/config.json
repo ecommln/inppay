@@ -58,7 +58,8 @@
     "LCP":  { "good": 2500, "poor": 4000, "unit": "ms",  "name": "Largest Contentful Paint" },
     "CLS":  { "good": 0.1,  "poor": 0.25, "unit": "",    "name": "Cumulative Layout Shift" },
     "TTFB": { "good": 800,  "poor": 1800, "unit": "ms",  "name": "Time to First Byte" },
-    "INP":  { "good": 200,  "poor": 500,  "unit": "ms",  "name": "Interaction to Next Paint" }
+    "INP":  { "good": 200,  "poor": 500,  "unit": "ms",  "name": "Interaction to Next Paint" },
+    "FCP":  { "good": 1800, "poor": 3000, "unit": "ms",  "name": "First Contentful Paint" }
   },
   "alerts": {
     "mode": "preview",
